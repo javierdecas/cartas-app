@@ -20,8 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('usuarios')->group(function()
 {
     Route::put('/crear', [UsuariosController::class, 'crear']);
-    Route::post('/login', [UsuariosController::class, 'login']);
-    Route::post('/recuperarPassword', [UsuariosController::class, 'recuperarPassword']);
+    Route::post('/login/{nombre_usuario}/{password}', [UsuariosController::class, 'login']);
+    Route::post('/recuperarPassword/{email}', [UsuariosController::class, 'recuperarPassword']);
 });
 Route::prefix('cartas')->group(function()
 {

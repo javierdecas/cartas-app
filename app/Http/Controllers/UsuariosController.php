@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Usuario;
 
 class UsuariosController extends Controller
 {
@@ -47,11 +48,11 @@ class UsuariosController extends Controller
 
         $respuesta = ["status" => 1, "msg" => ""];
 
-        $datos = $req->getContent();
+        // $datos = $req->getContent();
 
-        //VALIDAR EL JSON
+        // //VALIDAR EL JSON
 
-        $datos = json_decode($datos); //Se interpreta como objeto. Se puede pasar un parámetro para que en su lugar lo devuelva como array.
+        // $datos = json_decode($datos); //Se interpreta como objeto. Se puede pasar un parámetro para que en su lugar lo devuelva como array.
 
 
         //Buscar a la persona
@@ -61,7 +62,7 @@ class UsuariosController extends Controller
 
             if($usuario)
             {
-                if(isset($datos->password))
+                if(isset($password))
                 {
                     //comprobar contraseña
                 }
@@ -69,6 +70,42 @@ class UsuariosController extends Controller
                 {
                     $respuesta['msg'] = "Introduzca una contraseña.";
                 }
+            }
+            else
+            {
+                $respuesta["msg"] = "Nombre de usuario no encontrado";
+                $respuesta["status"] = 0;
+            }
+        }
+        catch(\Exception $e)
+        {
+            $respuesta['status'] = 0;
+            $respuesta['msg'] = "Se ha producido un error: ".$e->getMessage();
+        }
+
+        return response()->json($respuesta);
+    }
+    public function recuperarPassword(Request $req, $email)
+    {
+
+        $respuesta = ["status" => 1, "msg" => ""];
+
+        // $datos = $req->getContent();
+
+        // //VALIDAR EL JSON
+
+        // $datos = json_decode($datos); //Se interpreta como objeto. Se puede pasar un parámetro para que en su lugar lo devuelva como array.
+
+
+        //Buscar a la persona
+        try
+        {
+            $usuario = Usuario::find($email);
+
+            if($usuario)
+            {
+                $respuesta['msg'] = '' /* Nueva contraseña */ ;
+                $usuario->password = '' /* Nueva contraseña */; 
             }
             else
             {
