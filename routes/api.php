@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CartasController;
+use App\Http\Controllers\ColeccionsController;
+use App\Http\Controllers\VentasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::prefix('usuarios')->group(function()
 {
-    Route::put('/crear', [UsuariosController::class, 'crear']);
-    Route::post('/login/{nombre_usuario}/{password}', [UsuariosController::class, 'login']);
-    Route::post('/recuperarPassword/{email}', [UsuariosController::class, 'recuperarPassword']);
+    Route::put('/crear', [UsersController::class, 'crear']);
+    Route::post('/login/{nombre_usuario}/{password}', [UsersController::class, 'login']);
+    Route::post('/recuperarPassword/{email}', [UsersController::class, 'recuperarPassword']);
 });
 Route::prefix('cartas')->group(function()
 {
@@ -29,14 +33,16 @@ Route::prefix('cartas')->group(function()
 });
 Route::prefix('colecciones')->group(function()
 {
-    Route::put('/crear', [ColeccionesController::class, 'crear']); //Solo admin
+    Route::put('/crear', [ColeccionsController::class, 'crear']); //Solo admin
+    Route::put('/crearyasignar', [ColeccionsController::class, 'crearyasignar']); //Solo admin
+    Route::put('/asignar', [ColeccionsController::class, 'asignar']); //Solo admin
 });
 Route::prefix('ventas')->group(function()
 {
-    Route::put('/crear', [ColeccionesController::class, 'crear']); //Solo admin
+    Route::put('/crear', [VentasController::class, 'crear']); //Solo admin
 });
 Route::prefix('busquedas')->group(function()
 {
-    Route::get('/profesional', [ColeccionesController::class, 'crear']); //Solo profesionales y particulares
-    Route::get('/', [ColeccionesController::class, 'crear']);
+    Route::get('/profesional', [VentasController::class, 'crear']); //Solo profesionales y particulares
+    Route::get('/', [VentasController::class, 'crear']);
 });

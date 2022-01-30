@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Usuario;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
-class UsuariosController extends Controller
+
+class UsersController extends Controller
 {
     public function crear(Request $req)
     {
@@ -20,20 +23,21 @@ class UsuariosController extends Controller
 
         //VALIDAR LOS DATOS
 
-        $usuario = new Usuario();
+        $usuario = new User();
 
-        if(isset($datos->email))
-        {
-            $usuario->nombre_usuario = $datos->nombre_usuario;
-            $usuario->email = $datos->email;
-            $usuario->password = $datos->password;
-            $usuario->rol = $datos->rol;
-        }
+        
         //Escribir en la base de datos
         try
         {
-            $usuario->save();
-            $respuesta['msg'] = "Usuario guardada con id ".$usuario->id;
+            if(isset($datos->email))
+            {
+                $usuario->nombre_usuario = $datos->nombre_usuario;
+                $usuario->email = $datos->email;
+                $usuario->password = Hash::make($req->password);
+                $usuario->rol = $datos->rol;
+                $usuario->save();
+            }
+            $respuesta['msg'] = "Usuario guardado con id ".$usuario->id;
         }
         catch(\Exception $e)
         {
@@ -46,35 +50,31 @@ class UsuariosController extends Controller
     public function login(Request $req, $nombre_usuario, $password)
     {
 
-        $respuesta = ["status" => 1, "msg" => ""];
-
-        // $datos = $req->getContent();
-
-        // //VALIDAR EL JSON
-
-        // $datos = json_decode($datos); //Se interpreta como objeto. Se puede pasar un parámetro para que en su lugar lo devuelva como array.
-
-
         //Buscar a la persona
         try
         {
-            $usuario = Usuario::find($nombre_usuario);
+            $usuario = User::where('nombre_usuario', $nombre_usuario)->first();
 
             if($usuario)
             {
-                if(isset($password))
+                //comprobar contraseña
+                if (Hash::check($password, $usuario->password))
                 {
-                    //comprobar contraseña
+                    $token = Hash::make(now().$usuario->id);
+
+                    $usuario->api_token = $token;
+                    $usuario->save();
+
+                    return response($token);
                 }
                 else
                 {
-                    $respuesta['msg'] = "Introduzca una contraseña.";
+                    return response('Contraseña incorrecta', 401);
                 }
             }
             else
             {
                 $respuesta["msg"] = "Nombre de usuario no encontrado";
-                $respuesta["status"] = 0;
             }
         }
         catch(\Exception $e)
@@ -88,24 +88,16 @@ class UsuariosController extends Controller
     public function recuperarPassword(Request $req, $email)
     {
 
-        $respuesta = ["status" => 1, "msg" => ""];
-
-        // $datos = $req->getContent();
-
-        // //VALIDAR EL JSON
-
-        // $datos = json_decode($datos); //Se interpreta como objeto. Se puede pasar un parámetro para que en su lugar lo devuelva como array.
-
-
-        //Buscar a la persona
         try
         {
-            $usuario = Usuario::find($email);
+            $usuario = User::where('email', $email)->first();
 
             if($usuario)
             {
-                $respuesta['msg'] = '' /* Nueva contraseña */ ;
-                $usuario->password = '' /* Nueva contraseña */; 
+                $newPassword = Str::random(8);
+                $newPasswordEnc = Hash::make($newPassword);
+                $respuesta['msg'] = $newPassword;
+                $usuario->password = $newPasswordEnc; 
             }
             else
             {

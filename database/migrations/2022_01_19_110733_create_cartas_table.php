@@ -17,8 +17,6 @@ class CreateCartasTable extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('descripcion');
-            $table->foreignId('ventas_id');
-            $table->foreignId('coleccions_id');        
         });
     }
 

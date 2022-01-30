@@ -13,10 +13,10 @@ class CreateCartascoleccionTable extends Migration
      */
     public function up()
     {
-        Schema::create('cartascoleccion', function (Blueprint $table) {
+        Schema::create('cartascoleccions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cartas_id');
-            $table->foreignId('colecciones_id');
+            $table->foreignId('coleccions_id');
         });
     }
 
@@ -27,6 +27,6 @@ class CreateCartascoleccionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cartascoleccion');
+        Schema::dropIfExists('cartascoleccions');
     }
 }

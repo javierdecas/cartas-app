@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Carta;
+use App\Models\CartasColeccions;
 
 class CartasController extends Controller
 {
@@ -21,16 +22,22 @@ class CartasController extends Controller
         //VALIDAR LOS DATOS
 
         $carta = new Carta();
+        $asociacion = new CartasColeccions();
 
-        if(isset($datos->nombre))
-        {
-            $carta->nombre = $datos->nombre;
-            $carta->descripcion = $datos->descripcion;
-            $carta->coleccion = $datos->coleccion;
-        }
+        
         //Escribir en la base de datos
         try
         {
+            if(isset($datos->nombre))
+            {
+                $carta->nombre = $datos->nombre;
+                $carta->descripcion = $datos->descripcion;
+                $carta->save();
+
+                $asociacion->coleccions_id = $datos->coleccions_id;
+                $asociacion->cartas_id = $carta->id;
+                $asociacion->save();
+            }
             $carta->save();
             $respuesta['msg'] = "carta guardada con id ".$carta->id;
         }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateColeccionTable extends Migration
+class CreateColeccionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateColeccionTable extends Migration
      */
     public function up()
     {
-        Schema::create('coleccion', function (Blueprint $table) {
+        Schema::create('coleccions', function (Blueprint $table) {
             $table->id();
             $table->string('simbolo');
             $table->string('nombre');
@@ -28,6 +28,6 @@ class CreateColeccionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('coleccion');
+        Schema::dropIfExists('coleccions');
     }
 }
